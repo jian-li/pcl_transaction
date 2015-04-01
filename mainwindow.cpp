@@ -1,6 +1,8 @@
 #include <QtGui>
 #include "mainwindow.h"
 
+
+//constructor
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -9,31 +11,89 @@ MainWindow::MainWindow(QWidget *parent)
     createActions();
     createMenus();
 }
+//read the point cloud
+bool MainWindow::readPointCloud(QString filename)
+{
+    //TODO:read the point cloud according to the point cloud type
+    //get the format of point cloud
+    QString format = filename.split(".",QString.SkipEmptyParts).at(1);
 
+    if(QString::compare(format,"ply") == 0)
+    {
+        if(ply::io::loadPLYFile<pcl::PointXYZ>(filename,*cloud) == -1)
+        {
+            PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            return false;
+        }
+        else
+            return true;
+    }
+    else if(QString::compare(format,"pcd") == 0)
+    {
+        if(pcl::io::loadPCDFile<pcl::PointXYZ> (filename, *cloud) == -1)
+        {
+            PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            return false;
+        }
+        else
+            return true;
+    }
+    //TODO: compare more point cloud type
+
+}
+//open the point cloud file
 void MainWindow::open()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
+    QString filename = QFileDialog::getOpenFileName(this,
          tr("Open PCL"), "/home/jana", tr("PCL Files (*.pcd *.ply)"));
-    if( !fileName.isNull())
+    if( !filename.isNull())
     {
-       qDebug( fileName.toAscii() );
+       qDebug( filename.toAscii() );
     }
+    // read the point cloud
+    if(readPointCloud(filename) == true)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+//save point cloud in ply format
+void MainWindow::saveplypointcloud()
+{
+
+}
+//save point cloud in pcd format
+void MainWindow::savepcdpointcloud()
+{
+
 }
 
+//add action to widget
 void MainWindow::createActions()
 {
+    //create the open action
     openAct = new QAction(tr("&Open"),this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+    //change format to ply
+    toplyAct = new QAction(tr("&-->ply"),this);
+    connect(toplyAct,SIGNAL(triggered()),this,SLOT(saveplypointcloud));
+    //change format to pcd
+    topcdAct = new QAction(tr("&-->pcd"),this);
+    connect(topcdAct,SIGNAL(triggered()),this,SLOT(savepcdpointcloud));
 }
-
+//create menus
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(toplyAct);
+    editMenu->addAction(topcdAct);
 }
-
+//deconstructor
 MainWindow::~MainWindow()
 {
 
