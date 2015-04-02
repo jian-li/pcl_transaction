@@ -1,6 +1,17 @@
 #include <QtGui>
 #include "mainwindow.h"
+#include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
+#include <pcl/console/print.h>
+#include <pcl/console/parse.h>
+#include <pcl/console/time.h>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <iostream>
 
+using namespace pcl;
+using namespace pcl::io;
+using namespace pcl::console;
+using namespace std;
 
 //constructor
 MainWindow::MainWindow(QWidget *parent)
@@ -11,16 +22,18 @@ MainWindow::MainWindow(QWidget *parent)
     createActions();
     createMenus();
 }
+
 //read the point cloud
 bool MainWindow::readPointCloud(QString filename)
 {
     //TODO:read the point cloud according to the point cloud type
     //get the format of point cloud
-    QString format = filename.split(".",QString.SkipEmptyParts).at(1);
-
+    QStringList pieces = filename.split(".");
+    QString format = pieces.value(pieces.length());
+    std::string name = filename.toStdString();
     if(QString::compare(format,"ply") == 0)
     {
-        if(ply::io::loadPLYFile<pcl::PointXYZ>(filename,*cloud) == -1)
+        if(loadPLYFile(name, cloud) == -1)
         {
             PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
             return false;
@@ -30,7 +43,7 @@ bool MainWindow::readPointCloud(QString filename)
     }
     else if(QString::compare(format,"pcd") == 0)
     {
-        if(pcl::io::loadPCDFile<pcl::PointXYZ> (filename, *cloud) == -1)
+        if(loadPCDFile(name, cloud) == -1)
         {
             PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
             return false;
@@ -39,8 +52,8 @@ bool MainWindow::readPointCloud(QString filename)
             return true;
     }
     //TODO: compare more point cloud type
-
 }
+
 //open the point cloud file
 void MainWindow::open()
 {
@@ -51,12 +64,8 @@ void MainWindow::open()
        qDebug( filename.toAscii() );
     }
     // read the point cloud
-    if(readPointCloud(filename) == true)
-    {
-        return true;
-    }
-    else
-        return false;
+    readPointCloud(filename);
+
 }
 //save point cloud in ply format
 void MainWindow::saveplypointcloud()
