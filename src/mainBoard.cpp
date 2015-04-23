@@ -143,8 +143,17 @@ void mainBoard::setLayout()
 
 void mainBoard::openSlot()
 {
-
+    QString fullPath =  QFileDialog::getOpenFileName(this,tr("Open point cloud"), "/home/jian-li", tr("Pcl Files (*.ply *.pcd)"));
+    emit addPointCloudSignal(fullPath);
 }
+
+void mainBoard::connectSignalsAndSlots()
+{
+    /*mainBoard signals*/
+    connect(this,SIGNAL(addPointCloudSignal(QString)),cLib,SLOT(addPointCloudSlot(QString)));
+    connect(this,SIGNAL(addPointCloudSignal(QString)),fileListPanel,SLOT(addPointCloudNameSlot(QString)));
+}
+
 
 void mainBoard::convertToPcdSlot()
 {
@@ -161,8 +170,4 @@ void mainBoard::showOctParamSlot()
 
 }
 
-void mainBoard::connectSignalsAndSlots()
-{
-
-}
 
