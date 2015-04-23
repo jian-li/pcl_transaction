@@ -7,6 +7,7 @@ mainBoard::mainBoard()
     createMenus();
     createToolbars();
     setLayout();
+    connectSignalsAndSlots();
 }
 
 void mainBoard::initVariable()
@@ -17,9 +18,13 @@ void mainBoard::initVariable()
 
     cLib = new coreLib();
 
-    meshParamPanel = new meshParamWidget(this);
-    octmapParamPanel = new octmapParamWidget(this);
-    filterParamPanel = new filterParamWidget(this);
+    meshParamPanel = new meshParamWidget(NULL);
+    octmapParamPanel = new octmapParamWidget(NULL);
+    filterParamPanel = new filterParamWidget(NULL);
+
+    meshParamPanel->hide();
+    octmapParamPanel->hide();
+    filterParamPanel->hide();
 
     widget = new QWidget(this);
 }
@@ -42,6 +47,9 @@ void mainBoard::createActions()
     convertToOctAct = new QAction(tr("Convert to Octomap format"),this);
     convertToOctAct->setIcon(QIcon(":/mesh.png"));
 
+    convertToMeshAct = new QAction(tr("Convert to Mesh format"),this);
+    convertToMeshAct->setIcon(QIcon(":/mesh.png"));
+
     filteringAct = new QAction(tr("&Filter the point cloud"),this);
     filteringAct->setIcon(QIcon(":/filtering.png"));
 
@@ -61,11 +69,11 @@ void mainBoard::createActions()
     zoomOutAct->setIcon(QIcon(":/zoomout.png"));
 
 
-    connect(openAct,SIGNAL(triggered()),this,SIGNAL(openSlot()));
+    connect(openAct,SIGNAL(triggered()),this,SLOT(openSlot()));
 //    connect();
 //    connect(exitAct,SIGNAL(triggered()),);
-    connect(convertToPlyAct,SIGNAL(triggered()),cLib,SIGNAL(pcl2OctreeSlot()));
-//    connect(convertToOctAct,SIGNAL(triggered()),);
+    connect(convertToPlyAct,SIGNAL(triggered()),cLib,SLOT(pcl2OctreeSlot()));
+    connect(convertToOctAct,SIGNAL(triggered()),this,SLOT(showOctomapSettingSlot()));
 //    connect(filteringAct,SIGNAL(triggered()),);
 //    connect(setOctParamAct,SIGNAL(triggered()),);
 }
@@ -124,7 +132,7 @@ void mainBoard::setLayout()
     QGridLayout * rightGridLayout = new QGridLayout;
     rightGridLayout->setRowStretch(0,5);
     rightGridLayout->addWidget(pointcloudPanel,0,0,5,1);
-    rightGridLayout->addWidget(logFilePanel,5,1);
+    rightGridLayout->addWidget(logFilePanel,5,0);
 
     QGridLayout * leftGridLayout = new QGridLayout;
     leftGridLayout->addWidget(fileListPanel);
@@ -152,22 +160,42 @@ void mainBoard::connectSignalsAndSlots()
     /*mainBoard signals*/
     connect(this,SIGNAL(addPointCloudSignal(QString)),cLib,SLOT(addPointCloudSlot(QString)));
     connect(this,SIGNAL(addPointCloudSignal(QString)),fileListPanel,SLOT(addPointCloudNameSlot(QString)));
+    connect(this,SIGNAL(savePcdSignal(QString)),cLib,SLOT(savePcdSlot(QString)));
+    connect(this,SIGNAL(savePlySignal(QString)),cLib,SLOT(savePlySlot(QString)));
+    connect(this,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+    /*core lib signals*/
+    connect(cLib,SIGNAL(firstShowSignal(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)),pointcloudPanel,SLOT(firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)));
+    connect(cLib,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+    /*file list panel signals*/
+    connect(fileListPanel->getTreeWidget(),SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),pointcloudPanel,SLOT(refreshWindowSlot(QTreeWidgetItem*,int)));
+    connect(fileListPanel->getTreeWidget(),SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),cLib,SLOT(pclIndexChangedSlot(QTreeWidgetItem*,int)));
+    connect(fileListPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+//    connect();
+    /*octomap parameter setting panel signals*/
+    connect(octmapParamPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+    connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(octmapParamType *)),cLib,SLOT(setOctomapParamSlot(octmapParamType *)));
 }
 
+void mainBoard::showOctomapSettingSlot()
+{
+    octmapParamPanel->move(QApplication::desktop()->screen()->rect().center() - octmapParamPanel->rect().center());
+    octmapParamPanel->show();
+
+}
 
 void mainBoard::convertToPcdSlot()
 {
-
+    QString fullPath = QFileDialog::getSaveFileName(this,tr("Save Document"),QDir::currentPath(),tr("Documents (*.pcd)") );
+    emit savePcdSignal(fullPath);
 }
 
 void mainBoard::convertToPlySlot()
 {
-
+    QString fullPath = QFileDialog::getSaveFileName(this,tr("Save Document"),QDir::currentPath(),tr("Documents (*.ply)") );
+    emit savePlySignal(fullPath);
 }
 
-void mainBoard::showOctParamSlot()
-{
 
-}
+
 
 

@@ -29,7 +29,7 @@ signals:
 private slots:
     void addPointCloudNameSlot(QString filename);
     void treeItemDoubleClickedSlot(QTreeWidgetItem*,int);
-    void treeItemClickedSlot(QTreeWidgetItem*, int);
+//    void treeItemClickedSlot(QTreeWidgetItem*, int);
 //    void DoubleClickedCallback(QTreeWidgetItem*,int);
 private:
 //    QVector<QString> pclFile;

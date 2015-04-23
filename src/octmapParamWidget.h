@@ -12,9 +12,6 @@
 #include <QMessageBox>
 
 
-#include <pcl/compression/compression_profiles.h>
-
-
 class octmapParamWidget:public QWidget
 {
     Q_OBJECT
@@ -23,10 +20,11 @@ public:
     void initAll();
     void setWidgetLayout();
     void connectSignalAndSlot();
-    void setParamSlot(int type);
+    void setParamSlot();
     void setParam(int type);
 signals:
     void writeLogFileSlot(QString text);
+    void setCoreLibOctMapSignal(octmapParamType *);
 private slots:
     void showWindowSlot();
     void hideWindowSlot();

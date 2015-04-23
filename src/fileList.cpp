@@ -40,8 +40,8 @@ void fileList::addPointCloudNameSlot(QString fullPath)
 
 void fileList::connectSignalAndSlot()
 {
-    connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(treeItemDoubleClickedSlot(QTreeWidgetItem*,int)));
-    connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(treeItemClickedSlot(QTreeWidgetItem*,int)));
+//    connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(treeItemDoubleClickedSlot(QTreeWidgetItem*,int)));
+//    connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(treeItemClickedSlot(QTreeWidgetItem*,int)));
 }
 
 void fileList::treeItemDoubleClickedSlot(QTreeWidgetItem* item,int)
@@ -52,10 +52,10 @@ void fileList::treeItemDoubleClickedSlot(QTreeWidgetItem* item,int)
 
 }
 
-void fileList::treeItemClickedSlot(QTreeWidgetItem * item, int)
-{
-//    emit writeLogFileSignal("TreeItem clicked!");
-//    QString fileName;
-//    fileName = item->text(0);
-}
+//void fileList::treeItemClickedSlot(QTreeWidgetItem * item, int)
+//{
+////    emit writeLogFileSignal("TreeItem clicked!");
+////    QString fileName;
+////    fileName = item->text(0);
+//}
 

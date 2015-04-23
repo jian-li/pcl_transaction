@@ -36,7 +36,7 @@
 #include <pcl/console/time.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/compression/octree_pointcloud_compression.h>
+
 //vtk lib
 #include <vtkRenderWindow.h>
 /*user defined widget*/
@@ -63,10 +63,9 @@ private slots:
     void openSlot();
     void convertToPcdSlot();
     void convertToPlySlot();
-    void showOctParamSlot();
+    void showOctomapSettingSlot();
 signals:
     void showMeshSettingSignal();
-    void showOctomapSettingSignal();
     void showFilteringSettingSignal();
     void hideMeshSettingSignal();
     void hideOctomapSettingSignal();

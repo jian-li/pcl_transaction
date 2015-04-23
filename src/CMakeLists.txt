@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 
-project      (pcl-transaction)
+project      (pcl_transaction)
 find_package (Qt4 REQUIRED)
 find_package (VTK REQUIRED)
 find_package (PCL 1.7 REQUIRED)
@@ -45,11 +45,11 @@ QT4_ADD_RESOURCES(project_RESOURCES_RCC ${project_RESOURCES})
 INCLUDE         (${QT_USE_FILE})
 ADD_DEFINITIONS (${QT_DEFINITIONS})
 
-ADD_EXECUTABLE  (pcl_visualizer ${project_SOURCES}
+ADD_EXECUTABLE  (pcl_transaction ${project_SOURCES}
                                 ${project_FORMS_HEADERS}
                                 ${project_HEADERS_MOC}
 				${project_RESOURCES_RCC}
 )
 
-TARGET_LINK_LIBRARIES (pcl_visualizer ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES})
+TARGET_LINK_LIBRARIES (pcl_transaction ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES})
 

@@ -42,6 +42,7 @@ private slots:
     void savePcdSlot(QString );
     void pcl2OctreeSlot();
     void pclIndexChangedSlot(QTreeWidgetItem *item,int);
+    void setOctomapParamSlot(octmapParamType *);
 signals:
     void fileSletectedSignal(QString filename);
     void writeLogFileSignal(const QString& filename);
@@ -53,12 +54,14 @@ private:
     QString curfile;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
 
-
+    octmapParamType * octmapParam;
     //maintain the point cloud pointer lists
     map<QString,pcl::PointCloud<pcl::PointXYZRGB>::Ptr> pclList;
     //maintain the octomap pointer lists
     map<QString,pcl::PointCloud<pcl::PointXYZRGB>::Ptr> octomapList;
     map<QString,QString> pathList;
+
+
     //maintain the mesh pointer lists
 //    map<QString,pcl::> meshList;
 

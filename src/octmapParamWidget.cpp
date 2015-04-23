@@ -2,7 +2,7 @@
 #include "octmapParamWidget.h"
 
 using namespace std;
-using namespace pcl::io;
+
 
 octmapParamWidget::octmapParamWidget(QWidget* parent)
     : QWidget(parent)
@@ -55,15 +55,13 @@ void octmapParamWidget::initAll()
 
     setParam(0);
 
-    doVoxelGridDownSamplingBox->insertItem(0,"True");
+    doVoxelGridDownSamplingBox->insertItem(0,"Yes");
     doVoxelGridDownSamplingBox->insertItem(1,"No");
     doColorEncodingBox->insertItem(0,"Yes");
     doColorEncodingBox->insertItem(1,"No");
 
     dialogButtonBox->addButton("Ok",QDialogButtonBox::YesRole);
     dialogButtonBox->addButton("Cancel",QDialogButtonBox::NoRole);
-
-
 }
 
 void octmapParamWidget::setWidgetLayout()
@@ -90,18 +88,24 @@ void octmapParamWidget::setWidgetLayout()
 void octmapParamWidget::connectSignalAndSlot()
 {
     connect(paramTypeBox,SIGNAL(currentIndexChanged(int)),this,SLOT(rePaintPanelSlot(int)));
-    connect(this,SIGNAL(accepted()),this,SLOT(setParamSlot()));
+    connect(dialogButtonBox,SIGNAL(accepted()),this,SLOT(setParamSlot()));
 
 }
 
 
 void octmapParamWidget::setParam(int type)
 {
-    pointResolutionEdit->setText(QString::number( compressionProfiles_[type].pointResolution));
-    octreeResolutionEdit->setText(QString::number( compressionProfiles_[type].octreeResolution));
-    iFrameRateEdit->setText(QString::number( compressionProfiles_[type].iFrameRate));
-    colorBitResolutionEdit->setText(QString::number( compressionProfiles_[type].colorBitResolution));
-    if(compressionProfiles_[type].doVoxelGridDownSampling)
+    pointResolutionEdit->setText(QString::number( paramProfie[type].pointResolution));
+    octreeResolutionEdit->setText(QString::number( paramProfie[type].octreeResolution));
+    iFrameRateEdit->setText(QString::number( paramProfie[type].iFrameRate));
+    colorBitResolutionEdit->setText(QString::number( paramProfie[type].colorBitResolution));
+
+    pointResolutionEdit->setReadOnly(true);
+    octreeResolutionEdit->setReadOnly(true);
+    iFrameRateEdit->setReadOnly(true);
+    colorBitResolutionEdit->setReadOnly(true);
+
+    if(paramProfie[type].doVoxelGridDownSampling)
     {
         doVoxelGridDownSamplingBox->setCurrentIndex(0);
     }
@@ -109,7 +113,8 @@ void octmapParamWidget::setParam(int type)
     {
         doVoxelGridDownSamplingBox->setCurrentIndex(1);
     }
-    if(compressionProfiles_[type].doColorEncoding)
+    doVoxelGridDownSamplingBox->setEnabled(false);
+    if(paramProfie[type].doColorEncoding)
     {
         doColorEncodingBox->setCurrentIndex(0);
     }
@@ -117,6 +122,7 @@ void octmapParamWidget::setParam(int type)
     {
         doColorEncodingBox->setCurrentIndex(1);
     }
+    doColorEncodingBox->setEditable(false);
 }
 
 void octmapParamWidget::rePaintPanelSlot(int type)
@@ -128,13 +134,50 @@ void octmapParamWidget::rePaintPanelSlot(int type)
     }
     else
     {
+        doVoxelGridDownSamplingBox->setEnabled(true);
+        doColorEncodingBox->setEditable(true);
+
+        pointResolutionEdit->setReadOnly(false);
+        octreeResolutionEdit->setReadOnly(false);
+        iFrameRateEdit->setReadOnly(false);
+        colorBitResolutionEdit->setReadOnly(false);
+
 //        octmapParam->confProfileParam = new compressionProfiles_t;
     }
 }
 
-void octmapParamWidget::setParamSlot(int type)
+void octmapParamWidget::setParamSlot()
 {
-//    octmapParam->confProfileParam = new configurationProfile_t(compressionProfiles[type]);
+    octmapParamType * data;
+    if(paramTypeBox->currentIndex()!=12)
+    {
+        data = new octmapParamType(paramProfie[paramTypeBox->currentIndex()]);
+    }
+    else
+    {
+        data = new octmapParamType;
+        data->pointResolution = pointResolutionEdit->text().toDouble();
+        data->octreeResolution = octreeResolutionEdit->text().toDouble();
+        data->iFrameRate = octreeResolutionEdit->text().toDouble();
+        data->colorBitResolution = colorBitResolutionEdit->text().toDouble();
+        if(doVoxelGridDownSamplingBox->currentIndex() == 0)
+        {
+            data->doVoxelGridDownSampling = true;
+        }
+        else
+        {
+            data->doVoxelGridDownSampling = false;
+        }
+        if(doColorEncodingBox->currentIndex() == 0)
+        {
+            data->doColorEncoding = true;
+        }
+        else
+        {
+            data->doColorEncoding = false;
+        }
+    }
+    emit setCoreLibOctMapSignal(data);
 }
 
 void octmapParamWidget::showWindowSlot()

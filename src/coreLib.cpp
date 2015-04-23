@@ -33,7 +33,12 @@ using namespace std;
 //read the point cloud
 coreLib::coreLib()
 {
+    initVariable();
+}
 
+void coreLib::initVariable()
+{
+    octmapParam = new octmapParamType;
 }
 
 void coreLib::addPointCloudSlot(QString fullPath)
