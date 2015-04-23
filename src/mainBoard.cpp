@@ -1,6 +1,6 @@
 #include "mainBoard.h"
 
-void mainBoard::mainBoard()
+mainBoard::mainBoard()
 {
     initVariable();
     createActions();
@@ -12,13 +12,13 @@ void mainBoard::mainBoard()
 void mainBoard::initVariable()
 {
     fileListPanel = new fileList(this);
-    logFilePanel = new fileList(this);
+    logFilePanel = new QPlainTextEdit(this);
     pointcloudPanel = new pclWidget(this);
 
-    clib = new coreLib();
+    cLib = new coreLib();
 
-    meshParamPanel = new meshParamPanel(this);
-    octmapParamPanel = new octmapParamPanel(this);
+    meshParamPanel = new meshParamWidget(this);
+    octmapParamPanel = new octmapParamWidget(this);
     filterParamPanel = new filterParamWidget(this);
 
     widget = new QWidget(this);
@@ -52,20 +52,20 @@ void mainBoard::createActions()
     setFilteringParamAct = new QAction(tr("Set the filtering Param"),this);
 
     fitInAct = new QAction(tr("Fit in"),this);
-    fitInAct->setIcon(":/fitin.png");
+    fitInAct->setIcon(QIcon(":/fitin.png"));
 
     zoomInAct = new QAction(tr("Zoom in"),this);
-    zoomInAct->setIcon(":/zoomin.png");
+    zoomInAct->setIcon(QIcon(":/zoomin.png"));
 
     zoomOutAct = new QAction(tr("&Zoom in"),this);
-    zoomOutAct->setIcon(":/zoomout.png");
+    zoomOutAct->setIcon(QIcon(":/zoomout.png"));
 
 
     connect(openAct,SIGNAL(triggered()),this,SIGNAL(openSlot()));
 //    connect();
 //    connect(exitAct,SIGNAL(triggered()),);
     connect(convertToPlyAct,SIGNAL(triggered()),cLib,SIGNAL(pcl2OctreeSlot()));
-    connect(convertToOctAct,SIGNAL(triggered()),);
+//    connect(convertToOctAct,SIGNAL(triggered()),);
 //    connect(filteringAct,SIGNAL(triggered()),);
 //    connect(setOctParamAct,SIGNAL(triggered()),);
 }
@@ -132,12 +132,32 @@ void mainBoard::setLayout()
     QGridLayout * renderGridLayout =  new QGridLayout;
     renderGridLayout->setColumnStretch(0,1);
     renderGridLayout->setColumnStretch(1,4);
-    renderGridLayout->addLayout(leftGridLayout);
-    renderGridLayout->addLayout(rightGridLayout);
+    renderGridLayout->addLayout(leftGridLayout,0,0,1,1);
+    renderGridLayout->addLayout(rightGridLayout,0,1,1,4);
 
     widget->setLayout(renderGridLayout);
 
     this->setCentralWidget(widget);
+
+}
+
+void mainBoard::openSlot()
+{
+
+}
+
+void mainBoard::convertToPcdSlot()
+{
+
+}
+
+void mainBoard::convertToPlySlot()
+{
+
+}
+
+void mainBoard::showOctParamSlot()
+{
 
 }
 
