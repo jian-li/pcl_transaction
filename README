@@ -1,4 +1,4 @@
-This project aims to develop a application of processing point cloud, the project is based on the pcl library, written in c++, using the cross platform tool-cmake.
+This project aims to develop an application of processing point cloud, the project is based on the pcl library, written in c++, using the cross platform tool-cmake.
 It can only be used in linux, anyone who want to use the project should follow the steps:
 1.intall pcl
 2.install cmake 
