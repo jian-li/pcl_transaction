@@ -89,11 +89,13 @@ void coreLib::addPointCloudSlot(QString fullPath)
 }
 
 //pcl to octree
-void coreLib::pcl2OctreeSlot()
+void coreLib::convertpclToOctree()
 {
     emit writeLogFileSignal("Converting to octomap structure...");
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr decompressedCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-    OctreePointCloudCompression<pcl::PointXYZRGB> octreeCompression(pcl::io::MED_RES_ONLINE_COMPRESSION_WITH_COLOR, true);
+    OctreePointCloudCompression<pcl::PointXYZRGB> octreeCompression(MANUAL_CONFIGURATION,
+    true,octmapParam->pointResolution,octmapParam->octreeResolution,octmapParam->doVoxelGridDownSampling,
+    octmapParam->iFrameRate,octmapParam->doColorEncoding,octmapParam->colorBitResolution);
     std::stringstream compressedData;
     octreeCompression.encodePointCloud(cloud, compressedData);
     octreeCompression.decodePointCloud(compressedData, decompressedCloud);
@@ -154,6 +156,23 @@ void coreLib::savePlySlot(QString fullPath)
 
 //deconstructor
 coreLib::~coreLib()
+{
+
+}
+
+void coreLib::setOctomapParamSlot(int type,octmapParamType * data)
+{
+    octmapParam->colorBitResolution = data->colorBitResolution;
+    octmapParam->doColorEncoding = data->doColorEncoding;
+    octmapParam->doVoxelGridDownSampling = data->doVoxelGridDownSampling;
+    octmapParam->iFrameRate = data->iFrameRate;
+    octmapParam->octreeResolution = data->octreeResolution;
+    octmapParam->pointResolution = data->pointResolution;
+    compressionType = type;
+    convertpclToOctree();
+}
+
+void coreLib::setFilteringParamSlot()
 {
 
 }

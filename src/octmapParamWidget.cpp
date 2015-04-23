@@ -60,8 +60,8 @@ void octmapParamWidget::initAll()
     doColorEncodingBox->insertItem(0,"Yes");
     doColorEncodingBox->insertItem(1,"No");
 
-    dialogButtonBox->addButton("Ok",QDialogButtonBox::YesRole);
-    dialogButtonBox->addButton("Cancel",QDialogButtonBox::NoRole);
+    dialogButtonBox->addButton("Ok",QDialogButtonBox::AcceptRole);
+    dialogButtonBox->addButton("Cancel",QDialogButtonBox::RejectRole);
 }
 
 void octmapParamWidget::setWidgetLayout()
@@ -149,6 +149,8 @@ void octmapParamWidget::rePaintPanelSlot(int type)
 void octmapParamWidget::setParamSlot()
 {
     octmapParamType * data;
+    writeLogFileSignal("Ok button pressed!");
+    int type = paramTypeBox->currentIndex();
     if(paramTypeBox->currentIndex()!=12)
     {
         data = new octmapParamType(paramProfie[paramTypeBox->currentIndex()]);
@@ -177,13 +179,13 @@ void octmapParamWidget::setParamSlot()
             data->doColorEncoding = false;
         }
     }
-    emit setCoreLibOctMapSignal(data);
+    emit setCoreLibOctMapSignal(type,data);
 }
 
 void octmapParamWidget::showWindowSlot()
 {
-    writeLogFileSlot("Please set the octomap parameter!");
-    QMessageBox::information(this,"","");
+    writeLogFileSignal("Please set the octomap parameter!");
+//    QMessageBox::information(this,"","");
 }
 
 void octmapParamWidget::hideWindowSlot()

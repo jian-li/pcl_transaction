@@ -20,14 +20,15 @@ public:
     void initAll();
     void setWidgetLayout();
     void connectSignalAndSlot();
-    void setParamSlot();
     void setParam(int type);
 signals:
-    void writeLogFileSlot(QString text);
-    void setCoreLibOctMapSignal(octmapParamType *);
+    void writeLogFileSignal(QString text);
+    void setCoreLibOctMapSignal(int type,octmapParamType *);
+//    void convertToOctSignal();
 private slots:
     void showWindowSlot();
     void hideWindowSlot();
+    void setParamSlot();
     void rePaintPanelSlot(int type);
 
 private:

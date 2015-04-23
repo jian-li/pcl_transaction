@@ -35,14 +35,17 @@ class coreLib:public QObject
 public:
     coreLib();
     ~coreLib();
-
+    void convertpclToOctree();
+    void filteringPointCloud();
+    void convertPclToMesh();
+    void initVariable();
 private slots:
     void addPointCloudSlot(QString filename);
     void savePlySlot(QString );
     void savePcdSlot(QString );
-    void pcl2OctreeSlot();
     void pclIndexChangedSlot(QTreeWidgetItem *item,int);
-    void setOctomapParamSlot(octmapParamType *);
+    void setOctomapParamSlot(int ,octmapParamType *);
+    void setFilteringParamSlot();
 signals:
     void fileSletectedSignal(QString filename);
     void writeLogFileSignal(const QString& filename);
@@ -55,6 +58,7 @@ private:
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
 
     octmapParamType * octmapParam;
+    int compressionType;
     //maintain the point cloud pointer lists
     map<QString,pcl::PointCloud<pcl::PointXYZRGB>::Ptr> pclList;
     //maintain the octomap pointer lists

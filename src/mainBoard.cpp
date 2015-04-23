@@ -53,11 +53,11 @@ void mainBoard::createActions()
     filteringAct = new QAction(tr("&Filter the point cloud"),this);
     filteringAct->setIcon(QIcon(":/filtering.png"));
 
-    setOctParamAct = new QAction(tr("&Set Octomap parameter"),this);
+//    setOctParamAct = new QAction(tr("&Set Octomap parameter"),this);
 
-    setMeshParamAct = new QAction(tr("&Set Mesh parameter"),this);
+//    setMeshParamAct = new QAction(tr("&Set Mesh parameter"),this);
 
-    setFilteringParamAct = new QAction(tr("Set the filtering Param"),this);
+//    setFilteringParamAct = new QAction(tr("Set the filtering Param"),this);
 
     fitInAct = new QAction(tr("Fit in"),this);
     fitInAct->setIcon(QIcon(":/fitin.png"));
@@ -72,7 +72,7 @@ void mainBoard::createActions()
     connect(openAct,SIGNAL(triggered()),this,SLOT(openSlot()));
 //    connect();
 //    connect(exitAct,SIGNAL(triggered()),);
-    connect(convertToPlyAct,SIGNAL(triggered()),cLib,SLOT(pcl2OctreeSlot()));
+    connect(convertToPlyAct,SIGNAL(triggered()),cLib,SLOT(savePlySlot()));
     connect(convertToOctAct,SIGNAL(triggered()),this,SLOT(showOctomapSettingSlot()));
 //    connect(filteringAct,SIGNAL(triggered()),);
 //    connect(setOctParamAct,SIGNAL(triggered()),);
@@ -92,9 +92,9 @@ void mainBoard::createMenus()
     editMenu->addAction(convertToOctAct);
     editMenu->addAction(convertToMeshAct);
     editMenu->addAction(filteringAct);
-    editMenu->addAction(setOctParamAct);
-    editMenu->addAction(setMeshParamAct);
-    editMenu->addAction(setFilteringParamAct);
+//    editMenu->addAction(setOctParamAct);
+//    editMenu->addAction(setMeshParamAct);
+//    editMenu->addAction(setFilteringParamAct);
 
     viewMenu =  menuBar()->addMenu(tr("View"));
     viewMenu->addAction(fitInAct);
@@ -173,7 +173,9 @@ void mainBoard::connectSignalsAndSlots()
 //    connect();
     /*octomap parameter setting panel signals*/
     connect(octmapParamPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-    connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(octmapParamType *)),cLib,SLOT(setOctomapParamSlot(octmapParamType *)));
+    connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(int,octmapParamType *)),cLib,SLOT(setOctomapParamSlot(int,octmapParamType *)));
+//    connect(octmapParamPanel,SIGNAL());
+//    connect(octmapParamPanel,SIGNAL(convertToOctSignal()),cLib,SLOT(pcl2OctreeSlot()));
 }
 
 void mainBoard::showOctomapSettingSlot()
