@@ -2,25 +2,24 @@
     mainBoard.h \
     coreLib.h \
     dataPanel.h \
-    renderWindow.h \
     dataTypes.h \
     meshParamWidget.h \
     octmapParamWidget.h \
     filterParamWidget.h \
     pclWidget.h \
-    fileList.h
+    fileList.h \
+    octomapViewer.h
  SOURCES       = \
                  main.cpp \
     fileList.cpp \
     mainBoard.cpp \
     coreLib.cpp \
     dataPanel.cpp \
-    renderWindow.cpp \
-    dataTypes.cpp \
     filterParamWidget.cpp \
     meshParamWidget.cpp \
     octmapParamWidget.cpp \
-    pclWidget.cpp
+    pclWidget.cpp \
+    octomapViewer.cpp
 
  # install
  target.path = $$[QT_INSTALL_EXAMPLES]/mainwindows/menus

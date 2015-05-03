@@ -39,6 +39,9 @@
 
 //vtk lib
 #include <vtkRenderWindow.h>
+
+
+
 /*user defined widget*/
 #include "fileList.h"
 #include "pclWidget.h"
@@ -124,6 +127,7 @@ private:
     meshParamWidget * meshParamPanel;
     octmapParamWidget * octmapParamPanel;
     filterParamWidget * filterParamPanel;
+
     QWidget * widget;
 
 };

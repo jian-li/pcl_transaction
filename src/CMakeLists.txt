@@ -1,13 +1,42 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 
 project      (pcl_transaction)
+
+set(octomap_HOME "${HOME}/octomap/lib/cmake/octomap")
+
+set(OCTOMAP_INCLUDE_DIRS "/home/jian-li/octomap/octomap/include")
+set(OCTOMAP_LIBRARY_DIRS "/home/jian-li/octomap/lib")
+
+set(OCTOMAP_LIBRARIES
+  "/home/jian-li/octomap/lib/liboctomap.so"
+  "/home/jian-li/octomap/lib/liboctomath.so"
+)
+
+set(OCTOVIS_INCLUDE_DIRS "/usr/include/QGLViewer" "/home/jian-li/octomap/octovis/include")
+set(OCTOVIS_LIBRARY_DIRS "/usr/lib/i386-linux-gnu" "/home/jian-li/octomap/octovis/lib")
+
+
+# Set library names as absolute paths:
+set(OCTOVIS_LIBRARIES
+  "qglviewer-qt4"
+  "optimized;/usr/lib/i386-linux-gnu/libQtOpenGL.so;debug;/usr/lib/i386-linux-gnu/libQtOpenGL.so;optimized;/usr/lib/i386-linux-gnu/libQtGui.so;debug;/usr/lib/i386-linux-gnu/libQtGui.so;optimized;/usr/lib/i386-linux-gnu/libQtXml.so;debug;/usr/lib/i386-linux-gnu/libQtXml.so;optimized;/usr/lib/i386-linux-gnu/libQtCore.so;debug;/usr/lib/i386-linux-gnu/libQtCore.so"
+  "/home/jian-li/octomap/octovis/lib/liboctovis.so"
+)
+
 find_package (Qt4 REQUIRED)
 find_package (VTK REQUIRED)
 find_package (PCL 1.7 REQUIRED)
 
+include_directories (${OCTOMAP_INCLUDE_DIRS})
+include_directories (${OCTOVIS_INCLUDE_DIRS})
+
 include_directories (${PCL_INCLUDE_DIRS})
+
 link_directories    (${PCL_LIBRARY_DIRS})
+link_directories    (${OCTOVIS_LIBRARI_DIRS})
+
 add_definitions     (${PCL_DEFINITIONS})
+
 
 set  (project_HEADERS
 	coreLib.h
@@ -19,7 +48,6 @@ set  (project_HEADERS
 	meshParamWidget.h
 	octmapParamWidget.h
 	pclWidget.h
-	renderWindow.h
 )
 set ( project_FORMS
 )
@@ -32,12 +60,10 @@ set (project_SOURCES
 	meshParamWidget.cpp
 	octmapParamWidget.cpp
 	pclWidget.cpp
-	renderWindow.cpp
 	main.cpp
 )
 set(project_RESOURCES images/images.qrc)
 set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
-
 QT4_WRAP_CPP (project_HEADERS_MOC   ${project_HEADERS})
 QT4_WRAP_UI  (project_FORMS_HEADERS ${project_FORMS})
 QT4_ADD_RESOURCES(project_RESOURCES_RCC ${project_RESOURCES})
@@ -51,5 +77,9 @@ ADD_EXECUTABLE  (pcl_transaction ${project_SOURCES}
 				${project_RESOURCES_RCC}
 )
 
-TARGET_LINK_LIBRARIES (pcl_transaction ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES})
-
+TARGET_LINK_LIBRARIES (pcl_transaction ${QT_LIBRARIES} 
+				       ${PCL_LIBRARIES} 
+				       ${VTK_LIBRARIES}
+				       ${OCTOMAP_LIBRARIES} 
+				       ${OCTOVIS_LIBRARIES}
+)

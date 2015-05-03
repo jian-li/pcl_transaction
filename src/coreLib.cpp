@@ -20,6 +20,9 @@
 //vtk
 #include <vtkRenderWindow.h>
 
+//octomap lib
+#include <octomap/math/Utils.h>
+
 /*user defined lib include */
 #include "coreLib.h"
 
@@ -28,6 +31,7 @@ using namespace pcl::io;
 using namespace pcl::console;
 using namespace pcl::visualization;
 using namespace std;
+using namespace octomap;
 
 //constructor
 //read the point cloud
@@ -92,16 +96,22 @@ void coreLib::addPointCloudSlot(QString fullPath)
 void coreLib::convertpclToOctree()
 {
     emit writeLogFileSignal("Converting to octomap structure...");
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr decompressedCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-    OctreePointCloudCompression<pcl::PointXYZRGB> octreeCompression(MANUAL_CONFIGURATION,
-    true,octmapParam->pointResolution,octmapParam->octreeResolution,octmapParam->doVoxelGridDownSampling,
-    octmapParam->iFrameRate,octmapParam->doColorEncoding,octmapParam->colorBitResolution);
-    std::stringstream compressedData;
-    octreeCompression.encodePointCloud(cloud, compressedData);
-    octreeCompression.decodePointCloud(compressedData, decompressedCloud);
-    emit firstShowSignal(decompressedCloud,"octmap_"+curfile);
-    emit addFileNameSignal("octmap_"+curfile);
-    emit writeLogFileSignal("Converting finished!");
+    OcTree tree(octmapParam->resolution);
+    point3d origin(0.00f,0.00f,0.00f);
+    Pointcloud octomapCloud;
+    if(octmapParam->heightColor)
+    {
+
+    }
+    else
+    {
+        pointcloudPcltoOctomap(cloud,octomapCloud);
+        tree.insertPointCloud(octomapCloud,origin);
+    }
+        emit firstOctomapShowSignal(&tree,filename+".bt");
+//    emit firstShowSignal(decompressedCloud,"octmap_"+curfile);
+//    emit addFileNameSignal("octmap_"+curfile);
+//    emit writeLogFileSignal("Converting finished!");
 }
 
 void coreLib::pclIndexChangedSlot(QTreeWidgetItem* item,int)
@@ -130,7 +140,7 @@ void coreLib::savePcdSlot(QString fullPath)
             pcdwriter.write(fullPath.toStdString(),*cloud);
         else
         {
-            fullPath.append(".ply");
+            fullPath.append(".pcd");
             pcdwriter.write(fullPath.toStdString(),*cloud);
         }
     }
@@ -160,19 +170,25 @@ coreLib::~coreLib()
 
 }
 
-void coreLib::setOctomapParamSlot(int type,octmapParamType * data)
+void coreLib::setOctomapParamSlot(octmapParamType * data)
 {
-    octmapParam->colorBitResolution = data->colorBitResolution;
-    octmapParam->doColorEncoding = data->doColorEncoding;
-    octmapParam->doVoxelGridDownSampling = data->doVoxelGridDownSampling;
-    octmapParam->iFrameRate = data->iFrameRate;
-    octmapParam->octreeResolution = data->octreeResolution;
-    octmapParam->pointResolution = data->pointResolution;
-    compressionType = type;
+    octmapParam->resolution = data->resolution;
+    octmapParam->heightColor = data->heightColor;
     convertpclToOctree();
 }
 
 void coreLib::setFilteringParamSlot()
 {
 
+}
+
+void coreLib::pointcloudPcltoOctomap(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,Pointcloud &  octCloud)
+{
+    for (size_t i = 0; i < cloud->points.size(); i++)
+    {
+        float x = cloud->points[i].x;
+        float y = cloud->points[i].y;
+        float z = cloud->points[i].z;
+        octCloud.push_back(x,y,z);
+    }
 }

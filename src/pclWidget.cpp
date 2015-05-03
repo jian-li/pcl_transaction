@@ -8,9 +8,16 @@ using namespace pcl;
 pclWidget::pclWidget(QWidget* parent)
     :QTabWidget(parent)
 {
+    initVar();
+
+}
+
+void pclWidget::initVar()
+{
     QLabel * markPage = new QLabel;
     panelList.insert(pair<QString,QWidget *>("logo",markPage));
     markPage->setPixmap(QPixmap(":/logo.png"));
+    markPage->setScaledContents(true);
     this->addTab(markPage,"logo");
 }
 
@@ -32,7 +39,6 @@ void pclWidget::firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,QStri
 
     widget->SetRenderWindow(viewer->getRenderWindow());
     viewer->setupInteractor(widget->GetInteractor(),widget->GetRenderWindow());
-
     widget->update();
 
     viewer->addPointCloud(cloud,filename.toStdString());
@@ -45,6 +51,18 @@ void pclWidget::firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,QStri
 
 }
 
+void pclWidget::firstOctomapShowSlot(octomap::AbstractOcTree* octoTree, QString filename)
+{
+    ViewerWidget * viewerWidget = new ViewerWidget;
+    viewerWidget->addOctree(octoTree,0);
+    this->addTab(viewerWidget,filename);
+}
+
+
+void pclWidget::reshowOctomapWindowSlot(QString filename)
+{
+
+}
 
 void pclWidget::zoomInSlot()
 {

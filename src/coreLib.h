@@ -26,8 +26,12 @@
 #include <pcl/visualization/pcl_visualizer.h>
 //vtk lib
 #include <vtkRenderWindow.h>
+//
+#include <octomap/octomap.h>
+
 
 using namespace std;
+using namespace octomap;
 
 class coreLib:public QObject
 {
@@ -39,14 +43,17 @@ public:
     void filteringPointCloud();
     void convertPclToMesh();
     void initVariable();
+    void pointcloudPcltoOctomap(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,Pointcloud & octCloud);
 private slots:
     void addPointCloudSlot(QString filename);
     void savePlySlot(QString );
     void savePcdSlot(QString );
     void pclIndexChangedSlot(QTreeWidgetItem *item,int);
-    void setOctomapParamSlot(int ,octmapParamType *);
+    void setOctomapParamSlot(octmapParamType *);
     void setFilteringParamSlot();
 signals:
+    void firstOctomapShowSignal(AbstractOcTree *, QString filename);
+    void refreshOctomapWindowSignal(QString filename);
     void fileSletectedSignal(QString filename);
     void writeLogFileSignal(const QString& filename);
     void reshowSignal(QString filename);
@@ -58,7 +65,6 @@ private:
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
 
     octmapParamType * octmapParam;
-    int compressionType;
     //maintain the point cloud pointer lists
     map<QString,pcl::PointCloud<pcl::PointXYZRGB>::Ptr> pclList;
     //maintain the octomap pointer lists

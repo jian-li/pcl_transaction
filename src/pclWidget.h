@@ -17,6 +17,11 @@
 #include <pcl/visualization/pcl_visualizer.h>
 //vtk
 #include <vtkRenderWindow.h>
+//octomap
+#include <octomap/octomap.h>
+
+//octovis lib
+#include <ViewerWidget.h>
 
 
 using namespace std;
@@ -26,6 +31,7 @@ class pclWidget:public QTabWidget
     Q_OBJECT
 public:
     pclWidget(QWidget* parent);
+    void initVar();
 //TODO:zoom in
 private slots:
     void refreshWindowSlot(QTreeWidgetItem*,int);
@@ -33,6 +39,8 @@ private slots:
 //    void reshowSlot(QString filename);
     void zoomInSlot();
     void zoomOutSlot();
+    void firstOctomapShowSlot(octomap::AbstractOcTree, QString filename);
+    void reshowOctomapWindowSlot( QString filename);
 signals:
     void writeLogFile(QString text);
 private:

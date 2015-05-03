@@ -26,6 +26,7 @@ void mainBoard::initVariable()
     octmapParamPanel->hide();
     filterParamPanel->hide();
 
+
     widget = new QWidget(this);
 }
 
@@ -43,6 +44,7 @@ void mainBoard::createActions()
     convertToPlyAct = new QAction(tr("Convert to Ply format"),this);
 //    convert
     convertToPcdAct = new QAction(tr("Convert to Pcd format"),this);
+
 
     convertToOctAct = new QAction(tr("Convert to Octomap format"),this);
     convertToOctAct->setIcon(QIcon(":/mesh.png"));
@@ -72,7 +74,8 @@ void mainBoard::createActions()
     connect(openAct,SIGNAL(triggered()),this,SLOT(openSlot()));
 //    connect();
 //    connect(exitAct,SIGNAL(triggered()),);
-    connect(convertToPlyAct,SIGNAL(triggered()),cLib,SLOT(savePlySlot()));
+    connect(convertToPcdAct,SIGNAL(triggered()),this,SLOT(convertToPcdSlot()));
+    connect(convertToPlyAct,SIGNAL(triggered()),this,SLOT(convertToPlySlot()));
     connect(convertToOctAct,SIGNAL(triggered()),this,SLOT(showOctomapSettingSlot()));
 //    connect(filteringAct,SIGNAL(triggered()),);
 //    connect(setOctParamAct,SIGNAL(triggered()),);
@@ -92,9 +95,6 @@ void mainBoard::createMenus()
     editMenu->addAction(convertToOctAct);
     editMenu->addAction(convertToMeshAct);
     editMenu->addAction(filteringAct);
-//    editMenu->addAction(setOctParamAct);
-//    editMenu->addAction(setMeshParamAct);
-//    editMenu->addAction(setFilteringParamAct);
 
     viewMenu =  menuBar()->addMenu(tr("View"));
     viewMenu->addAction(fitInAct);
@@ -163,19 +163,25 @@ void mainBoard::connectSignalsAndSlots()
     connect(this,SIGNAL(savePcdSignal(QString)),cLib,SLOT(savePcdSlot(QString)));
     connect(this,SIGNAL(savePlySignal(QString)),cLib,SLOT(savePlySlot(QString)));
     connect(this,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+
     /*core lib signals*/
     connect(cLib,SIGNAL(firstShowSignal(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)),pointcloudPanel,SLOT(firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)));
+    connect(cLib,SIGNAL(addFileNameSignal(QString)),fileListPanel,SLOT(addPointCloudNameSlot(QString)));
     connect(cLib,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+    connect(cLib,SIGNAL(firstOctomapShowSignal(octomap::AbstractOcTree* octoTree,QString)),pointcloudPanel,SLOT(firstOctomapShowSlot(Octree*,QString)));
+    connect(cLib,SIGNAL(reshowSignal(QString)),pointcloudPanel,SLOT(reshowOctomapWindowSlot(QString)));
+
     /*file list panel signals*/
     connect(fileListPanel->getTreeWidget(),SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),pointcloudPanel,SLOT(refreshWindowSlot(QTreeWidgetItem*,int)));
     connect(fileListPanel->getTreeWidget(),SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),cLib,SLOT(pclIndexChangedSlot(QTreeWidgetItem*,int)));
     connect(fileListPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-//    connect();
+
     /*octomap parameter setting panel signals*/
     connect(octmapParamPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-    connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(int,octmapParamType *)),cLib,SLOT(setOctomapParamSlot(int,octmapParamType *)));
-//    connect(octmapParamPanel,SIGNAL());
-//    connect(octmapParamPanel,SIGNAL(convertToOctSignal()),cLib,SLOT(pcl2OctreeSlot()));
+    connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(octmapParamType *)),cLib,SLOT(setOctomapParamSlot(octmapParamType *)));
+    connect(octmapParamPanel->getDialogButtonBoxPtr(),SIGNAL(accepted()),octmapParamPanel,SLOT(hide()));
+    connect(octmapParamPanel->getDialogButtonBoxPtr(),SIGNAL(rejected()),octmapParamPanel,SLOT(hide()));
+\
 }
 
 void mainBoard::showOctomapSettingSlot()
