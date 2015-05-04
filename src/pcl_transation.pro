@@ -8,7 +8,7 @@
     filterParamWidget.h \
     pclWidget.h \
     fileList.h \
-    octomapViewer.h
+    ViewerWidget.h
  SOURCES       = \
                  main.cpp \
     fileList.cpp \
@@ -19,7 +19,7 @@
     meshParamWidget.cpp \
     octmapParamWidget.cpp \
     pclWidget.cpp \
-    octomapViewer.cpp
+    ViewerWidget.cpp
 
  # install
  target.path = $$[QT_INSTALL_EXAMPLES]/mainwindows/menus

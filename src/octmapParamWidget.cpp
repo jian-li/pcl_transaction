@@ -45,7 +45,7 @@ void octmapParamWidget::setWidgetLayout()
 void octmapParamWidget::connectSignalAndSlot()
 {
 //    connect(paramTypeBox,SIGNAL(currentIndexChanged(int)),this,SLOT(rePaintPanelSlot(int)));
-    connect(dialogButtonBox,SIGNAL(accepted()),this,SLOT(setParamSlot()));
+//    connect(dialogButtonBox,SIGNAL(accepted()),this,SLOT(setParamSlot()));
 }
 
 

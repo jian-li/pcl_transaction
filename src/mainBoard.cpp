@@ -1,5 +1,7 @@
 #include "mainBoard.h"
 
+using namespace octomap;
+
 mainBoard::mainBoard()
 {
     initVariable();
@@ -77,6 +79,7 @@ void mainBoard::createActions()
     connect(convertToPcdAct,SIGNAL(triggered()),this,SLOT(convertToPcdSlot()));
     connect(convertToPlyAct,SIGNAL(triggered()),this,SLOT(convertToPlySlot()));
     connect(convertToOctAct,SIGNAL(triggered()),this,SLOT(showOctomapSettingSlot()));
+
 //    connect(filteringAct,SIGNAL(triggered()),);
 //    connect(setOctParamAct,SIGNAL(triggered()),);
 }
@@ -163,12 +166,12 @@ void mainBoard::connectSignalsAndSlots()
     connect(this,SIGNAL(savePcdSignal(QString)),cLib,SLOT(savePcdSlot(QString)));
     connect(this,SIGNAL(savePlySignal(QString)),cLib,SLOT(savePlySlot(QString)));
     connect(this,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-
+    connect(this,SIGNAL(startOctomapConvertingSignal()),octmapParamPanel,SLOT(setParamSlot()));
     /*core lib signals*/
     connect(cLib,SIGNAL(firstShowSignal(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)),pointcloudPanel,SLOT(firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)));
     connect(cLib,SIGNAL(addFileNameSignal(QString)),fileListPanel,SLOT(addPointCloudNameSlot(QString)));
     connect(cLib,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-    connect(cLib,SIGNAL(firstOctomapShowSignal(octomap::AbstractOcTree* octoTree,QString)),pointcloudPanel,SLOT(firstOctomapShowSlot(Octree*,QString)));
+    connect(cLib,SIGNAL(firstOctomapShowSignal(OcTree* ,QString)),pointcloudPanel,SLOT(firstOctomapShowSlot(OcTree*,QString)));
     connect(cLib,SIGNAL(reshowSignal(QString)),pointcloudPanel,SLOT(reshowOctomapWindowSlot(QString)));
 
     /*file list panel signals*/
@@ -179,9 +182,17 @@ void mainBoard::connectSignalsAndSlots()
     /*octomap parameter setting panel signals*/
     connect(octmapParamPanel,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
     connect(octmapParamPanel,SIGNAL(setCoreLibOctMapSignal(octmapParamType *)),cLib,SLOT(setOctomapParamSlot(octmapParamType *)));
-    connect(octmapParamPanel->getDialogButtonBoxPtr(),SIGNAL(accepted()),octmapParamPanel,SLOT(hide()));
+    connect(octmapParamPanel->getDialogButtonBoxPtr(),SIGNAL(accepted()),this,SLOT(octomapParamSetted()));
     connect(octmapParamPanel->getDialogButtonBoxPtr(),SIGNAL(rejected()),octmapParamPanel,SLOT(hide()));
-\
+
+    /**/
+    connect(pointcloudPanel,SIGNAL(writeLogFile(QString)),logFilePanel,SLOT(appendPlainText(QString)));
+}
+
+void mainBoard::octomapParamSetted()
+{
+    octmapParamPanel->hide();
+    emit startOctomapConvertingSignal();
 }
 
 void mainBoard::showOctomapSettingSlot()

@@ -19,12 +19,14 @@
 #include <vtkRenderWindow.h>
 //octomap
 #include <octomap/octomap.h>
-
+#include <octomap/AbstractOcTree.h>
+#include <octomap/octomap_types.h>
 //octovis lib
-#include <ViewerWidget.h>
-
+#include <octovis/OcTreeRecord.h>
+#include "ViewerWidget.h"
 
 using namespace std;
+using namespace octomap;
 
 class pclWidget:public QTabWidget
 {
@@ -32,6 +34,7 @@ class pclWidget:public QTabWidget
 public:
     pclWidget(QWidget* parent);
     void initVar();
+    void showOctree();
 //TODO:zoom in
 private slots:
     void refreshWindowSlot(QTreeWidgetItem*,int);
@@ -39,7 +42,7 @@ private slots:
 //    void reshowSlot(QString filename);
     void zoomInSlot();
     void zoomOutSlot();
-    void firstOctomapShowSlot(octomap::AbstractOcTree, QString filename);
+    void firstOctomapShowSlot(OcTree *, QString filename);
     void reshowOctomapWindowSlot( QString filename);
 signals:
     void writeLogFile(QString text);

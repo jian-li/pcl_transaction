@@ -39,7 +39,7 @@
 
 //vtk lib
 #include <vtkRenderWindow.h>
-
+#include <octomap/AbstractOcTree.h>
 
 
 /*user defined widget*/
@@ -67,6 +67,7 @@ private slots:
     void convertToPcdSlot();
     void convertToPlySlot();
     void showOctomapSettingSlot();
+    void octomapParamSetted();
 signals:
     void showMeshSettingSignal();
     void showFilteringSettingSignal();
@@ -78,6 +79,8 @@ signals:
     void addPointCloudSignal(QString filename);
     void newPanelSignal();
     void writeLogFileSignal(QString text);
+
+    void startOctomapConvertingSignal();
 private:
 /*qt sys defined widget*/
 /******** menu list*************/

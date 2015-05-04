@@ -2,40 +2,42 @@ cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 
 project      (pcl_transaction)
 
-set(octomap_HOME "${HOME}/octomap/lib/cmake/octomap")
+#version 
+set(OCTOVIS_MAJOR_VERSION 1)
+set(OCTOVIS_MINOR_VERSION 6)
+set(OCTOVIS_PATCH_VERSION 8)
+set(OCTOVIS_VERSION ${OCTOVIS_MAJOR_VERSION}.${OCTOVIS_MINOR_VERSION}.${OCTOVIS_PATCH_VERSION})
+set(OCTOVIS_SOVERSION ${OCTOVIS_MAJOR_VERSION}.${OCTOVIS_MINOR_VERSION})
 
-set(OCTOMAP_INCLUDE_DIRS "/home/jian-li/octomap/octomap/include")
-set(OCTOMAP_LIBRARY_DIRS "/home/jian-li/octomap/lib")
+#octomap
 
-set(OCTOMAP_LIBRARIES
-  "/home/jian-li/octomap/lib/liboctomap.so"
-  "/home/jian-li/octomap/lib/liboctomath.so"
+set(QT_USE_QTXML TRUE)
+find_package(octomap ${OCTOVIS_MAJOR_VERSION}.${OCTOVIS_MINOR_VERSION} REQUIRED
+HINTS ${CMAKE_SOURCE_DIR}/lib/cmake/octomap
+${CMAKE_SOURCE_DIR}/../octomap/lib/cmake/octomap
 )
 
-set(OCTOVIS_INCLUDE_DIRS "/usr/include/QGLViewer" "/home/jian-li/octomap/octovis/include")
-set(OCTOVIS_LIBRARY_DIRS "/usr/lib/i386-linux-gnu" "/home/jian-li/octomap/octovis/lib")
+#octovis
+set(OCTOVIS_PROJECT_DIRS "/home/jian-li/octomap/octovis")
+SET (CMAKE_MODULE_PATH "${OCTOVIS_PROJECT_DIRS}/CMakeModules")
+set(OCTOVIS_INCLUDE_DIRS "${OCTOVIS_PROJECT_DIRS}/include")
+set(OCTOVIS_LIB_DIRS "${OCTOVIS_PROJECT_DIRS}/lib")
 
-
-# Set library names as absolute paths:
-set(OCTOVIS_LIBRARIES
-  "qglviewer-qt4"
-  "optimized;/usr/lib/i386-linux-gnu/libQtOpenGL.so;debug;/usr/lib/i386-linux-gnu/libQtOpenGL.so;optimized;/usr/lib/i386-linux-gnu/libQtGui.so;debug;/usr/lib/i386-linux-gnu/libQtGui.so;optimized;/usr/lib/i386-linux-gnu/libQtXml.so;debug;/usr/lib/i386-linux-gnu/libQtXml.so;optimized;/usr/lib/i386-linux-gnu/libQtCore.so;debug;/usr/lib/i386-linux-gnu/libQtCore.so"
-  "/home/jian-li/octomap/octovis/lib/liboctovis.so"
-)
-
-find_package (Qt4 REQUIRED)
+#QT4
+FIND_PACKAGE(Qt4 COMPONENTS QtCore QtXml QtOpenGL QtGui REQUIRED)
 find_package (VTK REQUIRED)
 find_package (PCL 1.7 REQUIRED)
+FIND_PACKAGE(OpenGL)	
+FIND_PACKAGE(QGLViewer)
 
 include_directories (${OCTOMAP_INCLUDE_DIRS})
-include_directories (${OCTOVIS_INCLUDE_DIRS})
-
 include_directories (${PCL_INCLUDE_DIRS})
 
 link_directories    (${PCL_LIBRARY_DIRS})
-link_directories    (${OCTOVIS_LIBRARI_DIRS})
+link_directories    (${OCTOMAP_LIBRARY_DIRS})
 
 add_definitions     (${PCL_DEFINITIONS})
+
 
 
 set  (project_HEADERS
@@ -81,4 +83,6 @@ TARGET_LINK_LIBRARIES (pcl_transaction ${QT_LIBRARIES}
 				       ${PCL_LIBRARIES} 
 				       ${VTK_LIBRARIES}
 				       ${OCTOMAP_LIBRARIES} 
+				       ${OCTOVIS_LIBRARIES}
+				       ${QT_XML_LIBRARY}
 )

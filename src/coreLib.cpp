@@ -1,6 +1,5 @@
 // **************Version QT4************************
 /*qt sys include*/
-#include <QtGui>
 #include <iostream>
 #include <QWidget>
 #include <QVTKWidget.h>
@@ -96,7 +95,7 @@ void coreLib::addPointCloudSlot(QString fullPath)
 void coreLib::convertpclToOctree()
 {
     emit writeLogFileSignal("Converting to octomap structure...");
-    OcTree tree(octmapParam->resolution);
+    OcTree * tree = new OcTree(octmapParam->resolution);
     point3d origin(0.00f,0.00f,0.00f);
     Pointcloud octomapCloud;
     if(octmapParam->heightColor)
@@ -106,12 +105,12 @@ void coreLib::convertpclToOctree()
     else
     {
         pointcloudPcltoOctomap(cloud,octomapCloud);
-        tree.insertPointCloud(octomapCloud,origin);
+        tree->insertPointCloud(octomapCloud,origin);
     }
-        emit firstOctomapShowSignal(&tree,filename+".bt");
-//    emit firstShowSignal(decompressedCloud,"octmap_"+curfile);
-//    emit addFileNameSignal("octmap_"+curfile);
-//    emit writeLogFileSignal("Converting finished!");
+    QString filename = curfile+".bt";
+    emit firstOctomapShowSignal(tree,filename);
+    emit addFileNameSignal(filename);
+    emit writeLogFileSignal("Converting to Octree finished!");
 }
 
 void coreLib::pclIndexChangedSlot(QTreeWidgetItem* item,int)

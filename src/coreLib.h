@@ -52,7 +52,7 @@ private slots:
     void setOctomapParamSlot(octmapParamType *);
     void setFilteringParamSlot();
 signals:
-    void firstOctomapShowSignal(AbstractOcTree *, QString filename);
+    void firstOctomapShowSignal(OcTree *, QString filename);
     void refreshOctomapWindowSignal(QString filename);
     void fileSletectedSignal(QString filename);
     void writeLogFileSignal(const QString& filename);
