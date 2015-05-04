@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Data.png</file>
+        <file>filtering.png</file>
+        <file>images.qrc</file>
+        <file>mesh.png</file>
+        <file>octomap.png</file>
+        <file>open.png</file>
+        <file>Reset.png</file>
+        <file>save.png</file>
+        <file>smooth.png</file>
+        <file>zoomin.png</file>
+        <file>zoomout.png</file>
+        <file>fitin.png</file>
+        <file>logo.png</file>
+    </qresource>
+</RCC>

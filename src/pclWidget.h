@@ -48,6 +48,9 @@ signals:
     void writeLogFile(QString text);
 private:
     QVTKWidget * centralVtkWidget;
+    ViewerWidget* m_glwidget;
+    std::map<int, OcTreeRecord> m_octrees;
+    unsigned int m_max_tree_depth;
 //    QVTKWidget * replayqvtkWidget;
 //    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
