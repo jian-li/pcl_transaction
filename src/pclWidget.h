@@ -23,6 +23,8 @@
 #include <octomap/octomap_types.h>
 //octovis lib
 #include <octovis/OcTreeRecord.h>
+#include <octomap/OcTreeBase.h>
+#include <octovis/ColorOcTreeDrawer.h>
 #include "ViewerWidget.h"
 
 using namespace std;
@@ -35,6 +37,8 @@ public:
     pclWidget(QWidget* parent);
     void initVar();
     void showOctree();
+    void addOctree(octomap::AbstractOcTree* tree, int id, octomap::pose6d origin);
+    bool getOctreeRecord(int id, OcTreeRecord*& otr);
 //TODO:zoom in
 private slots:
     void refreshWindowSlot(QTreeWidgetItem*,int);

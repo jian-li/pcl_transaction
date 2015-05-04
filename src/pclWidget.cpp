@@ -54,16 +54,70 @@ void pclWidget::firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,QStri
 void pclWidget::firstOctomapShowSlot(OcTree* octoTree, QString filename)
 {
     m_glwidget = new ViewerWidget;
-    OcTreeRecord otr;
-    otr.octree_drawer = new OcTreeDrawer();
-    otr.octree = octoTree;
     octomap::pose6d o;
-    otr.origin = o;
-    m_octrees[0] = otr;
-    m_glwidget->addSceneObject(otr.octree_drawer);
+    addOctree(octoTree,0,o);
     this->addTab(m_glwidget,filename);
     showOctree();
 }
+
+bool pclWidget::getOctreeRecord(int id, OcTreeRecord*& otr)
+{
+    std::map<int, OcTreeRecord>::iterator it = m_octrees.find(id);
+    if( it != m_octrees.end() ) {
+      otr = &(it->second);
+      return true;
+    }
+    else {
+      return false;
+    }
+}
+void pclWidget::addOctree(octomap::AbstractOcTree* tree, int id, octomap::pose6d origin)
+{
+    // is id in use?
+        OcTreeRecord* r;
+        bool foundRecord = getOctreeRecord(id, r);
+        if (foundRecord && r->octree->getTreeType().compare(tree->getTreeType()) !=0){
+          // delete old drawer, create new
+          delete r->octree_drawer;
+          if (dynamic_cast<OcTree*>(tree)) {
+            r->octree_drawer = new OcTreeDrawer();
+            //        fprintf(stderr, "adding new OcTreeDrawer for node %d\n", id);
+          }
+          else if (dynamic_cast<ColorOcTree*>(tree)) {
+            r->octree_drawer = new ColorOcTreeDrawer();
+          } else{
+            OCTOMAP_ERROR("Could not create drawer for tree type %s\n", tree->getTreeType().c_str());
+          }
+
+          delete r->octree;
+          r->octree = tree;
+          r->origin = origin;
+
+        } else if (foundRecord && r->octree->getTreeType().compare(tree->getTreeType()) ==0) {
+          // only swap out tree
+          delete r->octree;
+          r->octree = tree;
+          r->origin = origin;
+        } else {
+          // add new record
+          OcTreeRecord otr;
+          otr.id = id;
+          if (dynamic_cast<OcTree*>(tree)) {
+            otr.octree_drawer = new OcTreeDrawer();
+            //        fprintf(stderr, "adding new OcTreeDrawer for node %d\n", id);
+          }
+          else if (dynamic_cast<ColorOcTree*>(tree)) {
+            otr.octree_drawer = new ColorOcTreeDrawer();
+          } else{
+            OCTOMAP_ERROR("Could not create drawer for tree type %s\n", tree->getTreeType().c_str());
+          }
+          otr.octree = tree;
+          otr.origin = origin;
+          m_octrees[id] = otr;
+          m_glwidget->addSceneObject(otr.octree_drawer);
+        }
+}
+
 
 void pclWidget::showOctree()
 {
