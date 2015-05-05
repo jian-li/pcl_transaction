@@ -28,7 +28,9 @@
 #include <vtkRenderWindow.h>
 //
 #include <octomap/octomap.h>
-
+#include <octomap/OcTreeBase.h>
+#include <octovis/ColorOcTreeDrawer.h>
+#include <octomap/ColorOcTree.h>
 
 using namespace std;
 using namespace octomap;
@@ -52,7 +54,7 @@ private slots:
     void setOctomapParamSlot(octmapParamType *);
     void setFilteringParamSlot();
 signals:
-    void firstOctomapShowSignal(OcTree *, QString filename);
+    void firstOctomapShowSignal(AbstractOcTree *, QString filename);
     void refreshOctomapWindowSignal(QString filename);
     void fileSletectedSignal(QString filename);
     void writeLogFileSignal(const QString& filename);

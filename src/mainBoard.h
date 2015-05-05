@@ -68,6 +68,7 @@ private slots:
     void convertToPlySlot();
     void showOctomapSettingSlot();
     void octomapParamSetted();
+    void fitInSlot();
 signals:
     void showMeshSettingSignal();
     void showFilteringSettingSignal();
@@ -119,6 +120,8 @@ private:
     QAction * fitInAct;
     QAction * zoomInAct;
     QAction * zoomOutAct;
+    QAction * heightColorAct;
+    QAction * freeSpaceAct;
     //
 /******** panel list*************/
     fileList * fileListPanel;

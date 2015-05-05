@@ -95,27 +95,30 @@ void coreLib::addPointCloudSlot(QString fullPath)
 void coreLib::convertpclToOctree()
 {
     emit writeLogFileSignal("Converting to octomap structure...");
-    OcTree * tree = new OcTree(octmapParam->resolution);
+
     point3d origin(0.00f,0.00f,0.00f);
     Pointcloud octomapCloud;
+    QString filename = curfile+".bt";
     if(octmapParam->heightColor)
     {
-
+        ColorOcTree * tree = new ColorOcTree(octmapParam->resolution);
+        pointcloudPcltoOctomap(cloud,octomapCloud);
+        tree->insertPointCloud(octomapCloud,origin);
+        emit firstOctomapShowSignal(tree,filename);
     }
     else
     {
+        OcTree * tree = new OcTree(octmapParam->resolution);
         pointcloudPcltoOctomap(cloud,octomapCloud);
         tree->insertPointCloud(octomapCloud,origin);
+        emit firstOctomapShowSignal(tree,filename);
     }
-    QString filename = curfile+".bt";
-    emit firstOctomapShowSignal(tree,filename);
     emit addFileNameSignal(filename);
     emit writeLogFileSignal("Converting to Octree finished!");
 }
 
 void coreLib::pclIndexChangedSlot(QTreeWidgetItem* item,int)
 {
-
     QString selectedFile = item->text(0);
     emit writeLogFileSignal("Selected "+selectedFile);
     if(selectedFile == curfile)

@@ -37,17 +37,20 @@ public:
     pclWidget(QWidget* parent);
     void initVar();
     void showOctree();
+
     void addOctree(octomap::AbstractOcTree* tree, int id, octomap::pose6d origin);
     bool getOctreeRecord(int id, OcTreeRecord*& otr);
 //TODO:zoom in
 private slots:
+    void freeSpaceSlot(bool checked);
     void refreshWindowSlot(QTreeWidgetItem*,int);
     void firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,QString filename);
 //    void reshowSlot(QString filename);
     void zoomInSlot();
     void zoomOutSlot();
-    void firstOctomapShowSlot(OcTree *, QString filename);
+    void firstOctomapShowSlot(AbstractOcTree *, QString filename);
     void reshowOctomapWindowSlot( QString filename);
+    void convert2HeightMapSlot(bool checked);
 signals:
     void writeLogFile(QString text);
 private:

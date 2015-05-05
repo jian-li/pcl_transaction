@@ -57,6 +57,7 @@ void mainBoard::createActions()
     filteringAct = new QAction(tr("&Filter the point cloud"),this);
     filteringAct->setIcon(QIcon(":/filtering.png"));
 
+    freeSpaceAct = new QAction(tr("&View freespace"),this);
 //    setOctParamAct = new QAction(tr("&Set Octomap parameter"),this);
 
 //    setMeshParamAct = new QAction(tr("&Set Mesh parameter"),this);
@@ -72,7 +73,12 @@ void mainBoard::createActions()
     zoomOutAct = new QAction(tr("&Zoom in"),this);
     zoomOutAct->setIcon(QIcon(":/zoomout.png"));
 
+    heightColorAct = new QAction(tr("Height color"),this);
 
+    heightColorAct->setCheckable(true);
+    freeSpaceAct->setCheckable(true);
+
+    connect(fitInAct,SIGNAL(triggered()),this,SLOT(fitInSlot()));
     connect(openAct,SIGNAL(triggered()),this,SLOT(openSlot()));
 //    connect();
 //    connect(exitAct,SIGNAL(triggered()),);
@@ -103,6 +109,8 @@ void mainBoard::createMenus()
     viewMenu->addAction(fitInAct);
     viewMenu->addAction(zoomInAct);
     viewMenu->addAction(zoomOutAct);
+    viewMenu->addAction(heightColorAct);
+    viewMenu->addAction(freeSpaceAct);
 }
 
 void mainBoard::createToolbars()
@@ -167,11 +175,13 @@ void mainBoard::connectSignalsAndSlots()
     connect(this,SIGNAL(savePlySignal(QString)),cLib,SLOT(savePlySlot(QString)));
     connect(this,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
     connect(this,SIGNAL(startOctomapConvertingSignal()),octmapParamPanel,SLOT(setParamSlot()));
+    connect(this->heightColorAct,SIGNAL(toggled(bool)),pointcloudPanel,SLOT(convert2HeightMapSlot(bool)));
+    connect(this->freeSpaceAct,SIGNAL(toggled(bool)),pointcloudPanel,SLOT(freeSpaceSlot(bool)));
     /*core lib signals*/
     connect(cLib,SIGNAL(firstShowSignal(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)),pointcloudPanel,SLOT(firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr,QString)));
     connect(cLib,SIGNAL(addFileNameSignal(QString)),fileListPanel,SLOT(addPointCloudNameSlot(QString)));
     connect(cLib,SIGNAL(writeLogFileSignal(QString)),logFilePanel,SLOT(appendPlainText(QString)));
-    connect(cLib,SIGNAL(firstOctomapShowSignal(OcTree* ,QString)),pointcloudPanel,SLOT(firstOctomapShowSlot(OcTree*,QString)));
+    connect(cLib,SIGNAL(firstOctomapShowSignal(AbstractOcTree* ,QString)),pointcloudPanel,SLOT(firstOctomapShowSlot(AbstractOcTree*,QString)));
     connect(cLib,SIGNAL(reshowSignal(QString)),pointcloudPanel,SLOT(reshowOctomapWindowSlot(QString)));
 
     /*file list panel signals*/
@@ -212,6 +222,11 @@ void mainBoard::convertToPlySlot()
 {
     QString fullPath = QFileDialog::getSaveFileName(this,tr("Save Document"),QDir::currentPath(),tr("Documents (*.ply)") );
     emit savePlySignal(fullPath);
+}
+
+void mainBoard::fitInSlot()
+{
+
 }
 
 

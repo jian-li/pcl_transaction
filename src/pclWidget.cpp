@@ -48,10 +48,9 @@ void pclWidget::firstshowSlot(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,QStri
 
     widget->update();
     this->addTab(widget,filename);
-
 }
 
-void pclWidget::firstOctomapShowSlot(OcTree* octoTree, QString filename)
+void pclWidget::firstOctomapShowSlot(AbstractOcTree* octoTree, QString filename)
 {
     m_glwidget = new ViewerWidget;
     octomap::pose6d o;
@@ -71,6 +70,16 @@ bool pclWidget::getOctreeRecord(int id, OcTreeRecord*& otr)
       return false;
     }
 }
+
+void pclWidget::freeSpaceSlot(bool checked)
+{
+    for (std::map<int, OcTreeRecord>::iterator it = m_octrees.begin();
+        it != m_octrees.end(); ++it) {
+      it->second.octree_drawer->enableFreespace(checked);
+    }
+    m_glwidget->updateGL();
+}
+
 void pclWidget::addOctree(octomap::AbstractOcTree* tree, int id, octomap::pose6d origin)
 {
     // is id in use?
@@ -201,6 +210,11 @@ void pclWidget::showOctree()
       //    fprintf(stderr, "setOcTree took %f sec\n", time_to_generate);
       m_glwidget->updateGL();
     }
+}
+
+void pclWidget::convert2HeightMapSlot(bool checkd)
+{
+    m_glwidget->enableHeightColorMode(checkd);
 }
 
 void pclWidget::reshowOctomapWindowSlot(QString filename)
